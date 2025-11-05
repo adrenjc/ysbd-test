@@ -62,8 +62,8 @@ app.use(
       const allowedOrigins = [
         "http://localhost:3000", // 前端开发环境
         "http://localhost:3001", // 后端开发环境
-        "https://www.yssh.cc", // 生产环境域名
-        "https://yssh.cc", // 生产环境域名（不带www）
+        "https://www.adrenjc.cn", // 生产环境域名
+        "https://adrenjc.cn", // 生产环境域名（不带www）
       ]
 
       // 开发环境允许所有来源
