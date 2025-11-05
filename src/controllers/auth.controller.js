@@ -18,6 +18,7 @@ const {
  */
 const register = asyncHandler(async (req, res) => {
   const { username, password, name, role, department, position } = req.body
+  const displayName = (name || "").trim() || username
 
   // 检查用户名是否已存在
   const existingUser = await User.findByUsername(username)
@@ -29,7 +30,7 @@ const register = asyncHandler(async (req, res) => {
   const user = new User({
     username,
     password, // 密码会在模型的pre('save')中间件中自动加密
-    name,
+    name: displayName,
     role: role || "operator",
     department,
     position,

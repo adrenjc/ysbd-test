@@ -76,11 +76,12 @@ const userRegistrationSchema = {
       "string.max": "密码长度不能超过128位",
       "any.required": "密码不能为空",
     }),
-    name: Joi.string().min(2).max(50).required().messages({
-      "string.min": "姓名至少2个字符",
-      "string.max": "姓名不能超过50个字符",
-      "any.required": "姓名不能为空",
-    }),
+    name: Joi.string()
+      .trim()
+      .max(50)
+      .allow("", null)
+      .empty("")
+      .default(Joi.ref("username")),
     role: Joi.string()
       .valid("admin", "reviewer", "operator", "viewer")
       .default("operator"),
