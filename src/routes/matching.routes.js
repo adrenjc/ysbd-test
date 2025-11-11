@@ -32,6 +32,14 @@ const {
 
 const router = express.Router()
 
+const BASIC_MATCHING_ACCESS = [
+  "matching.create",
+  "matching.review",
+  "matching.confirm",
+]
+
+const REVIEW_MATCHING_ACCESS = ["matching.review", "matching.confirm"]
+
 /**
  * 任务管理路由
  */
@@ -40,7 +48,7 @@ const router = express.Router()
 router.get(
   "/tasks",
   authenticateToken,
-  authorize("matching.read"),
+  authorize(BASIC_MATCHING_ACCESS),
   getMatchingTasks
 )
 
@@ -73,7 +81,7 @@ router.post(
 router.get(
   "/tasks/:id",
   authenticateToken,
-  authorize("matching.read"),
+  authorize(BASIC_MATCHING_ACCESS),
   validateRequest({
     params: require("joi").object({
       id: require("joi")
@@ -89,7 +97,7 @@ router.get(
 router.post(
   "/tasks/:id/execute",
   authenticateToken,
-  authorize("matching.execute"),
+  authorize(BASIC_MATCHING_ACCESS),
   validateRequest({
     params: require("joi").object({
       id: require("joi")
@@ -105,7 +113,7 @@ router.post(
 router.delete(
   "/tasks/:id",
   authenticateToken,
-  authorize("matching.delete"),
+  authorize(BASIC_MATCHING_ACCESS),
   validateRequest({
     params: require("joi").object({
       id: require("joi")
@@ -121,7 +129,7 @@ router.delete(
 router.patch(
   "/tasks/:id/status",
   authenticateToken,
-  authorize("matching.read"),
+  authorize(BASIC_MATCHING_ACCESS),
   validateRequest({
     params: require("joi").object({
       id: require("joi")
@@ -163,7 +171,7 @@ router.get(
 router.get(
   "/records",
   authenticateToken,
-  authorize("matching.read"),
+  authorize(BASIC_MATCHING_ACCESS),
   validateRequest({
     query: require("joi").object({
       taskId: require("joi")
@@ -259,7 +267,7 @@ router.post(
 router.get(
   "/tasks/:taskId/export",
   authenticateToken,
-  authorize("matching.view"),
+  authorize(REVIEW_MATCHING_ACCESS),
   validateRequest({
     params: require("joi").object({
       taskId: require("joi")
@@ -278,7 +286,7 @@ router.get(
 router.get(
   "/products/matched",
   authenticateToken,
-  authorize("matching.view"),
+  authorize(REVIEW_MATCHING_ACCESS),
   getMatchedProducts
 )
 

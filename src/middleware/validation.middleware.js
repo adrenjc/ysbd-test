@@ -84,7 +84,7 @@ const userRegistrationSchema = {
       .default(Joi.ref("username")),
     role: Joi.string()
       .valid("admin", "reviewer", "operator", "viewer")
-      .default("operator"),
+      .default("viewer"),
     department: Joi.string().max(100).allow(""),
     position: Joi.string().max(100).allow(""),
   }),

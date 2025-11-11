@@ -84,7 +84,7 @@ router.get(
 router.post(
   "/cleanup",
   authenticateToken,
-  authorize ? authorize(["admin"]) : (req, res, next) => next(),
+  authorize ? authorize("system.config") : (req, res, next) => next(),
   asyncHandler(async (req, res) => {
     try {
       if (logger && logger.info) {

@@ -3,6 +3,10 @@
  */
 const mongoose = require("mongoose")
 const bcrypt = require("bcrypt")
+const {
+  ALL_PERMISSIONS,
+  getRolePermissions,
+} = require("../config/permissions")
 
 const UserSchema = new mongoose.Schema(
   {
@@ -32,6 +36,21 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    email: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      default: "",
+      match: [
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        "��������Ч�����䣡",
+      ],
+    },
+    phone: {
+      type: String,
+      trim: true,
+      default: "",
+    },
 
     // 权限和角色
     role: {
@@ -43,19 +62,7 @@ const UserSchema = new mongoose.Schema(
     permissions: [
       {
         type: String,
-        enum: [
-          "product.read",
-          "product.write",
-          "product.delete",
-          "matching.create",
-          "matching.review",
-          "matching.confirm",
-          "price.read",
-          "price.write",
-          "report.read",
-          "user.manage",
-          "system.config",
-        ],
+        enum: ALL_PERMISSIONS,
       },
     ],
 
@@ -139,42 +146,7 @@ UserSchema.virtual("isLocked").get(function () {
 
 // 虚拟字段：完整角色权限
 UserSchema.virtual("fullPermissions").get(function () {
-  const rolePermissions = {
-    admin: [
-      "product.read",
-      "product.write",
-      "product.delete",
-      "matching.create",
-      "matching.review",
-      "matching.confirm",
-      "price.read",
-      "price.write",
-      "report.read",
-      "user.manage",
-      "system.config",
-    ],
-    reviewer: [
-      "product.read",
-      "product.write",
-      "matching.create",
-      "matching.review",
-      "matching.confirm",
-      "price.read",
-      "price.write",
-      "report.read",
-    ],
-    operator: [
-      "product.read",
-      "product.write",
-      "matching.create",
-      "matching.review",
-      "price.read",
-      "report.read",
-    ],
-    viewer: ["product.read", "price.read", "report.read"],
-  }
-
-  const rolePerms = rolePermissions[this.role] || []
+  const rolePerms = getRolePermissions(this.role)
   return [...new Set([...rolePerms, ...(this.permissions || [])])]
 })
 

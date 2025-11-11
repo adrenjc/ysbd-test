@@ -1381,6 +1381,34 @@ const getPendingReviews = asyncHandler(async (req, res) => {
 
 const getAllMatchingRecords = asyncHandler(async (req, res) => {
   const { taskId, page = 1, limit = 20, status } = req.query
+  const user = req.user
+
+  const hasReviewPermission =
+    user.role === "admin" ||
+    (Array.isArray(user.permissions) &&
+      (user.permissions.includes("matching.review") ||
+        user.permissions.includes("matching.confirm")))
+
+  if (!hasReviewPermission) {
+    if (!taskId) {
+      return res.status(403).json({
+        success: false,
+        message: "当前角色仅可查看自己创建的匹配任务，请提供任务ID",
+      })
+    }
+
+    const task = await MatchingTask.findById(taskId).select("createdBy")
+    if (!task) {
+      throw new NotFoundError("匹配任务")
+    }
+
+    if (task.createdBy.toString() !== user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "权限不足，仅能查看自己创建的匹配任务",
+      })
+    }
+  }
 
   console.log("🔍 getAllMatchingRecords 请求参数:", {
     taskId,

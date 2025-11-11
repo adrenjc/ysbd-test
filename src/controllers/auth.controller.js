@@ -12,6 +12,7 @@ const {
   asyncHandler,
   BusinessError,
 } = require("../middleware/error.middleware")
+const { manifestSummary, ROLE_PERMISSIONS } = require("../config/permissions")
 
 /**
  * 用户注册
@@ -19,6 +20,8 @@ const {
 const register = asyncHandler(async (req, res) => {
   const { username, password, name, role, department, position } = req.body
   const displayName = (name || "").trim() || username
+  const normalizedRole =
+    role && ROLE_PERMISSIONS[role] ? role : "viewer"
 
   // 检查用户名是否已存在
   const existingUser = await User.findByUsername(username)
@@ -31,7 +34,7 @@ const register = asyncHandler(async (req, res) => {
     username,
     password, // 密码会在模型的pre('save')中间件中自动加密
     name: displayName,
-    role: role || "operator",
+    role: normalizedRole,
     department,
     position,
   })
@@ -42,7 +45,7 @@ const register = asyncHandler(async (req, res) => {
   const { accessToken, refreshToken } = generateTokens(user._id)
 
   // 记录操作日志
-  logOperation("用户注册", user, { username, role })
+  logOperation("用户注册", user, { username, role: normalizedRole })
 
   logger.info("用户注册成功", {
     userId: user._id,
@@ -61,7 +64,11 @@ const register = asyncHandler(async (req, res) => {
         role: user.role,
         department: user.department,
         position: user.position,
+        email: user.email,
+        phone: user.phone,
+        permissions: user.fullPermissions,
         createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
       },
       tokens: {
         accessToken,
@@ -407,6 +414,16 @@ const resetPassword = asyncHandler(async (req, res) => {
   })
 })
 
+/**
+ * 获取权限清单
+ */
+const getPermissionManifest = asyncHandler(async (_req, res) => {
+  res.json({
+    success: true,
+    data: manifestSummary,
+  })
+})
+
 module.exports = {
   register,
   login,
@@ -417,4 +434,5 @@ module.exports = {
   changePassword,
   requestPasswordReset,
   resetPassword,
+  getPermissionManifest,
 }

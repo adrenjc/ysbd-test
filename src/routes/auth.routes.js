@@ -12,6 +12,7 @@ const {
   changePassword,
   requestPasswordReset,
   resetPassword,
+  getPermissionManifest,
 } = require("../controllers/auth.controller")
 
 const { authenticateToken } = require("../middleware/auth.middleware")
@@ -68,6 +69,13 @@ router.post("/logout", authenticateToken, logout)
 
 // 获取当前用户信息
 router.get("/me", authenticateToken, getCurrentUser)
+
+// 获取权限清单
+router.get(
+  "/permissions/manifest",
+  authenticateToken,
+  getPermissionManifest
+)
 
 // 更新用户资料
 router.put(

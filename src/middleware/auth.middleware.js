@@ -5,6 +5,10 @@ const jwt = require("jsonwebtoken")
 const User = require("../models/User")
 const { logger } = require("../utils/logger")
 const config = require("../config/env")
+const {
+  ROLE_PERMISSIONS,
+  getRolePermissions,
+} = require("../config/permissions")
 
 /**
  * JWT令牌验证中间件
@@ -30,24 +34,7 @@ const authenticateToken = async (req, res, next) => {
         email: "dev@example.com",
         role: "admin",
         isActive: true,
-        permissions: [
-          "product.read",
-          "product.write",
-          "product.delete",
-          "template.view",
-          "template.create",
-          "template.update",
-          "template.delete",
-          "template.manage",
-          "matching.create",
-          "matching.review",
-          "matching.confirm",
-          "price.read",
-          "price.write",
-          "report.read",
-          "user.manage",
-          "system.config",
-        ],
+        permissions: getRolePermissions("admin"),
       }
       return next()
     }
@@ -233,55 +220,8 @@ const optionalAuth = async (req, res, next) => {
  * 获取用户权限列表
  */
 const getUserPermissions = (user) => {
-  const rolePermissions = {
-    admin: [
-      "product.read",
-      "product.write",
-      "product.delete",
-      "template.view",
-      "template.create",
-      "template.update",
-      "template.delete",
-      "template.manage",
-      "matching.create",
-      "matching.review",
-      "matching.confirm",
-      "price.read",
-      "price.write",
-      "report.read",
-      "user.manage",
-      "system.config",
-    ],
-    reviewer: [
-      "product.read",
-      "product.write",
-      "template.view",
-      "template.create",
-      "template.update",
-      "template.delete",
-      "matching.create",
-      "matching.review",
-      "matching.confirm",
-      "price.read",
-      "price.write",
-      "report.read",
-    ],
-    operator: [
-      "product.read",
-      "product.write",
-      "template.view",
-      "template.create",
-      "template.update",
-      "matching.create",
-      "matching.review",
-      "price.read",
-      "report.read",
-    ],
-    viewer: ["product.read", "template.view", "price.read", "report.read"],
-  }
-
-  const rolePerms = rolePermissions[user.role] || []
-  const customPerms = user.permissions || []
+  const rolePerms = getRolePermissions(user.role)
+  const customPerms = Array.isArray(user.permissions) ? user.permissions : []
 
   return [...new Set([...rolePerms, ...customPerms])]
 }
