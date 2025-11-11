@@ -1,0 +1,69 @@
+{
+  "permissions": {
+    "product.read": { "category": "product", "description": "View product catalog and details" },
+    "product.write": { "category": "product", "description": "Create or update products" },
+    "product.delete": { "category": "product", "description": "Delete products permanently" },
+    "template.view": { "category": "template", "description": "View template library" },
+    "template.create": { "category": "template", "description": "Create new templates" },
+    "template.update": { "category": "template", "description": "Modify existing templates" },
+    "template.delete": { "category": "template", "description": "Delete templates" },
+    "template.manage": { "category": "template", "description": "Manage template publishing and ownership" },
+    "matching.create": { "category": "matching", "description": "Create matching tasks" },
+    "matching.review": { "category": "matching", "description": "Review matching results" },
+    "matching.confirm": { "category": "matching", "description": "Confirm finalized matches" },
+    "price.read": { "category": "pricing", "description": "View price intelligence" },
+    "price.write": { "category": "pricing", "description": "Edit price intelligence" },
+    "report.read": { "category": "reporting", "description": "Access analytics and reports" },
+    "user.manage": { "category": "administration", "description": "Manage platform users" },
+    "system.config": { "category": "administration", "description": "Modify system level settings" }
+  },
+  "roles": {
+    "admin": [
+      "product.read",
+      "product.write",
+      "product.delete",
+      "template.view",
+      "template.create",
+      "template.update",
+      "template.delete",
+      "template.manage",
+      "matching.create",
+      "matching.review",
+      "matching.confirm",
+      "price.read",
+      "price.write",
+      "report.read",
+      "user.manage",
+      "system.config"
+    ],
+    "reviewer": [
+      "product.read",
+      "product.write",
+      "template.view",
+      "template.update",
+      "matching.create",
+      "matching.review",
+      "matching.confirm",
+      "price.read",
+      "report.read"
+    ],
+    "operator": [
+      "product.read",
+      "product.write",
+      "template.view",
+      "template.create",
+      "template.update",
+      "matching.create",
+      "matching.review",
+      "price.read",
+      "report.read"
+    ],
+    "viewer": [
+      "product.read",
+      "matching.create",
+      "template.view",
+      "price.read",
+      "report.read"
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 const path = require("path")
 
-const manifestPath = path.join(__dirname, "../../..", "shared", "permissions.json")
+const manifestPath = path.join(__dirname, "../..", "config", "permissions.json")
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const manifest = require(manifestPath)
 
